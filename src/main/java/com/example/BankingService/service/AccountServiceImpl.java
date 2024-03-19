@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +29,7 @@ public class AccountServiceImpl implements AccountService{
 
         //Set the value of account details
         account.setBalance(balance);
-        account.setName(username);
+        account.setUsername(username);
         account.setAccountType(accountType);
         account.setBranch(branch);
 
@@ -53,7 +54,7 @@ public class AccountServiceImpl implements AccountService{
     }
 
     @Override
-    public Integer transferMoney(String fromAccountNumber, String toAccountNumber, double amount) {
+    public Integer transferMoney(String fromAccountNumber, String toAccountNumber, double amount, String description) {
         Account fromAccount = accountRepository.findByAccountNumber(fromAccountNumber);
         Account toAccount = accountRepository.findByAccountNumber(toAccountNumber);
 
@@ -67,9 +68,18 @@ public class AccountServiceImpl implements AccountService{
 
         fromAccount.setBalance(fromAccount.getBalance() - amount);
         toAccount.setBalance(toAccount.getBalance() + amount);
+
+        Transaction transaction = new Transaction();
+        transaction.setFromAccount(fromAccountNumber);
+        transaction.setToAccount(toAccountNumber);
+        transaction.setAmount(amount);
+        transaction.setTransactionType("Transfer");
+        transaction.setDescription(description);
+        transaction.setTimestamp(LocalDateTime.now());
         // Update both accounts in the database
         accountRepository.save(fromAccount);
         accountRepository.save(toAccount);
+        transactionRepository.save(transaction);
         return 0;
     }
 

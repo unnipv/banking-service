@@ -9,7 +9,7 @@ public interface AccountService {
     Account createAccount(String branch, String accountType, String name, Double balance);
 
     void closeAccount(String accountNumber);
-    Integer transferMoney(String fromAccountNumber, String toAccountNumber, double amount);
+    Integer transferMoney(String fromAccountNumber, String toAccountNumber, double amount, String description);
     double getAccountBalance(String accountNumber);
     List<Transaction> getTransactionHistory(String accountNumber);
 }

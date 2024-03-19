@@ -50,7 +50,8 @@ public class AccountController {
         String fromAccount = (String) transferRequest.get("fromAccount");
         String toAccount = (String) transferRequest.get("toAccount");
         Double amount = (Double) transferRequest.get("amount");
-        Integer res = accountService.transferMoney(fromAccount, toAccount, amount);
+        String description = (String) transferRequest.get("description");
+        Integer res = accountService.transferMoney(fromAccount, toAccount, amount, description);
         if (res == 0)
             return new ResponseEntity<>("Transfer successful", HttpStatus.OK);
         else if (res == 1)
@@ -59,9 +60,14 @@ public class AccountController {
             return new ResponseEntity<>("Transfer unsuccessful. Insufficient funds", HttpStatus.BAD_REQUEST);
     }
 
-    @DeleteMapping("/{accountNumber}")
+    @DeleteMapping("/{accountNumber}/close")
     public ResponseEntity<String> closeAccount(@PathVariable String accountNumber) {
-        // Implement account closure logic here
-        return new ResponseEntity<>("Account closed successfully", HttpStatus.OK);
+        try {
+            accountService.closeAccount(accountNumber);
+            return new ResponseEntity<>("Account closed successfully", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Account closure failed", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
     }
 }
