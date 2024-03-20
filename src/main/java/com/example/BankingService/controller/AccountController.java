@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/api/accounts")
 public class AccountController {
     @Autowired
@@ -44,7 +45,7 @@ public class AccountController {
     }
 
     @PostMapping("/transfer")
-    public ResponseEntity<String> transferMoney(@RequestBody String json) throws JsonProcessingException{
+    public ResponseEntity<?> transferMoney(@RequestBody String json) throws JsonProcessingException{
         ObjectMapper mapper = new ObjectMapper();
         Map<String, Object> transferRequest = mapper.readValue(json, Map.class);
         String fromAccount = (String) transferRequest.get("fromAccount");
@@ -53,20 +54,19 @@ public class AccountController {
         String description = (String) transferRequest.get("description");
         Integer res = accountService.transferMoney(fromAccount, toAccount, amount, description);
         if (res == 0)
-            return new ResponseEntity<>("Transfer successful", HttpStatus.OK);
-        else if (res == 1)
-            return new ResponseEntity<>("Transfer unsuccessful. One or both accounts not found", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.OK);
         else
-            return new ResponseEntity<>("Transfer unsuccessful. Insufficient funds", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @DeleteMapping("/{accountNumber}/close")
     public ResponseEntity<String> closeAccount(@PathVariable String accountNumber) {
         try {
             accountService.closeAccount(accountNumber);
-            return new ResponseEntity<>("Account closed successfully", HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>("Account closure failed", HttpStatus.INTERNAL_SERVER_ERROR);
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }

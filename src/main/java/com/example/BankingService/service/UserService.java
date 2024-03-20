@@ -6,7 +6,7 @@ import com.example.BankingService.model.User;
 import java.util.List;
 
 public interface UserService {
-    User createUser(User user);
+    String createUser(User user);
     boolean checkUsernameExists(String username);
     List<Account> getUserAccounts(String username);
 }

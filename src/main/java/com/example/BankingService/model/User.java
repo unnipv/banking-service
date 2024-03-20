@@ -11,13 +11,13 @@ public class User {
     @Column(name = "USERNAME", nullable = false, unique = true)
     private String username;
 
-    @Column(name = "NAME", nullable = false, unique = true)
+    @Column(name = "NAME", nullable = false)
     private String name;
 
-    @Column(name = "EMAIL", nullable = false, unique = true)
+    @Column(name = "EMAIL", nullable = false)
     private String email;
 
-    @Column(name = "PHONE_NUMBER", nullable = false, unique = true)
+    @Column(name = "PHONE_NUMBER", nullable = false)
     private String phoneNumber;
 
     @Column(name = "PASSWORD", nullable = false)

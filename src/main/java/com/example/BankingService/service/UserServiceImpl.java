@@ -20,10 +20,17 @@ public class UserServiceImpl implements UserService{
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
     @Override
-    public User createUser(User user) {
+    public String createUser(User user) {
+        if (userRepository.existsByUsername(user.getUsername()))
+            return "Username already exists.";
         String hashedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(hashedPassword);
-        return userRepository.save(user);
+        try{
+            userRepository.save(user);
+            return "Registration successful";
+        } catch (Exception e){
+            return "Registration failed.";
+        }
     }
     @Override
     public boolean checkUsernameExists(String username) {
